@@ -23,6 +23,9 @@ class SportsfixIE(InfoExtractor):
             print '[Sportsfix] Stream not live'
             return {
                 'id': stadiumId,
+                'url': None,
+                'title': None,
+                'formats': []
             }
         webpage = self._download_webpage(url, stadiumId)
 
