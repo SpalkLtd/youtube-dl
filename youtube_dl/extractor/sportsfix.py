@@ -42,7 +42,7 @@ class SportsfixIE(InfoExtractor):
                        })
 
         formats = self._extract_m3u8_formats(self, videoJson['sources'][0]['src'], stadiumId, 
-                              entry_protocol='m3u8', fatal=True, live=True):
+                              entry_protocol='m3u8', fatal=True, live=True)
 
         return {
             'id': videoId,
