@@ -41,15 +41,13 @@ class SportsfixIE(InfoExtractor):
                        'Accept': 'application/json;pk=' + policyKey
                        })
 
+        formats = self._extract_m3u8_formats(self, videoJson['sources'][0]['src'], stadiumId, 
+                              entry_protocol='m3u8', fatal=True, live=True):
+
         return {
             'id': videoId,
             'title': videoJson['name'],
             'description': videoJson['description'],
-            'formats': {
-                'manifest_url': videoJson['sources'][0]['src'],
-                'format': 'm3u8-live-master',
-                'format_id': 0,
-                'protocol': 'm3u8-native',
-            },
+            'formats': formats,
             # TODO more properties (see youtube_dl/extractor/common.py)
         }
