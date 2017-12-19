@@ -30,9 +30,7 @@ class SportsfixIE(InfoExtractor):
         webpage = self._download_webpage(url, stadiumId)
 
         policyKey = self._html_search_regex(r'policyKey: "(.*)",', webpage, 'policyKey')
-        print policyKey
         videoId = self._html_search_regex(r'<link itemprop="embedURL" content="https://players\.brightcove\.net/[0-9]+/[A-z0-9_-]+/index\.html\?videoId=([0-9]+)">', webpage, 'videoId')
-        print videoId
         jsonUrl = self._BRIGHTCOVE_URL + videoId
         videoJson = self._download_json(jsonUrl, stadiumId,
                        note='Downloading JSON metadata',
