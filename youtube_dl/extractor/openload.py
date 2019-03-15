@@ -249,7 +249,7 @@ class OpenloadIE(InfoExtractor):
                             (?:www\.)?
                             (?:
                                 openload\.(?:co|io|link|pw)|
-                                oload\.(?:tv|stream|site|xyz|win|download|cloud|cc|icu|fun|club|info|pw)
+                                oload\.(?:tv|stream|site|xyz|win|download|cloud|cc|icu|fun|club|info|pw|live|space)
                             )
                         )/
                         (?:f|embed)/
@@ -345,6 +345,12 @@ class OpenloadIE(InfoExtractor):
         'only_matching': True,
     }, {
         'url': 'https://oload.pw/f/WyKgK8s94N0',
+        'only_matching': True,
+    }, {
+        'url': 'https://oload.live/f/-Z58UZ-GR4M',
+        'only_matching': True,
+    }, {
+        'url': 'https://oload.space/f/IY4eZSst3u8/',
         'only_matching': True,
     }]
 
