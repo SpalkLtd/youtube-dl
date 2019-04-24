@@ -1652,7 +1652,7 @@ class YoutubeIE(YoutubeBaseInfoExtractor):
                         view_count = extract_view_count(get_video_info)
                     if not video_info:
                         video_info = get_video_info
-                    if 'token' in get_video_info:
+                    if 'account_playback_token' in get_video_info:
                         # Different get_video_info requests may report different results, e.g.
                         # some may report video unavailability, but some may serve it without
                         # any complaint (see https://github.com/ytdl-org/youtube-dl/issues/7362,
@@ -1662,7 +1662,7 @@ class YoutubeIE(YoutubeBaseInfoExtractor):
                         # due to YouTube measures against IP ranges of hosting providers.
                         # Working around by preferring the first succeeded video_info containing
                         # the token if no such video_info yet was found.
-                        if 'token' not in video_info:
+                        if 'account_playback_token' not in video_info:
                             video_info = get_video_info
                         break
 
@@ -1677,8 +1677,7 @@ class YoutubeIE(YoutubeBaseInfoExtractor):
                 unavailable_message = 'Unable to extract video data'
             raise ExtractorError(
                 'YouTube said: %s' % unavailable_message, expected=True, video_id=video_id)
-
-        if 'token' not in video_info:
+        if 'account_playback_token' not in video_info:
             if 'reason' in video_info:
                 if 'The uploader has not made this video available in your country.' in video_info['reason']:
                     regions_allowed = self._html_search_meta(
