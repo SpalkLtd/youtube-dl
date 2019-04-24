@@ -351,7 +351,8 @@ class YoutubeIE(YoutubeBaseInfoExtractor):
                             (?:www\.)?hooktube\.com/|
                             (?:www\.)?yourepeat\.com/|
                             tube\.majestyc\.net/|
-                            (?:www\.)?invidio\.us/|
+                            (?:(?:www|dev)\.)?invidio\.us/|
+                            (?:www\.)?invidiou\.sh/|
                             (?:www\.)?invidious\.snopyta\.org/|
                             (?:www\.)?invidious\.kabi\.tk/|
                             (?:www\.)?vid\.wxzm\.sx/|
@@ -483,7 +484,7 @@ class YoutubeIE(YoutubeBaseInfoExtractor):
         # RTMP (unnamed)
         '_rtmp': {'protocol': 'rtmp'},
     }
-    _SUBTITLE_FORMATS = ('ttml', 'vtt')
+    _SUBTITLE_FORMATS = ('srv1', 'srv2', 'srv3', 'ttml', 'vtt')
 
     _GEO_BYPASS = False
 
@@ -1669,6 +1670,13 @@ class YoutubeIE(YoutubeBaseInfoExtractor):
             return self._html_search_regex(
                 r'(?s)<h1[^>]+id="unavailable-message"[^>]*>(.+?)</h1>',
                 video_webpage, 'unavailable message', default=None)
+
+        if not video_info:
+            unavailable_message = extract_unavailable_message()
+            if not unavailable_message:
+                unavailable_message = 'Unable to extract video data'
+            raise ExtractorError(
+                'YouTube said: %s' % unavailable_message, expected=True, video_id=video_id)
 
         if 'token' not in video_info:
             if 'reason' in video_info:
