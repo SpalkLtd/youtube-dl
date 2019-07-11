@@ -1604,7 +1604,12 @@ class YoutubeIE(YoutubeBaseInfoExtractor):
                 if not video_info and args.get('ypc_vid'):
                     return self.url_result(
                         args['ypc_vid'], YoutubeIE.ie_key(), video_id=args['ypc_vid'])
-                if args.get('livestream') == '1' or args.get('live_playback') == 1:
+
+                player_response2 = args.get('player_response')
+                videoDetails = {}
+                if player_response2:
+                    videoDetails = json.loads(player_response2).get('videoDetails')
+                if args.get('livestream') == '1' or args.get('live_playback') == 1 or videoDetails.get('isLive') == True:
                     is_live = True
                 sts = ytplayer_config.get('sts')
                 if not player_response:
