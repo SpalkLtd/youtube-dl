@@ -73,6 +73,8 @@ from youtube_dl.utils import (
     smuggle_url,
     str_to_int,
     strip_jsonp,
+    strip_or_none,
+    subtitles_filename,
     timeconvert,
     unescapeHTML,
     unified_strdate,
@@ -183,7 +185,7 @@ class TestUtil(unittest.TestCase):
 
         self.assertEqual(sanitize_filename(
             'ÂÃÄÀÁÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖŐØŒÙÚÛÜŰÝÞßàáâãäåæçèéêëìíîïðñòóôõöőøœùúûüűýþÿ', restricted=True),
-            'AAAAAAAECEEEEIIIIDNOOOOOOOOEUUUUUYPssaaaaaaaeceeeeiiiionooooooooeuuuuuypy')
+            'AAAAAAAECEEEEIIIIDNOOOOOOOOEUUUUUYTHssaaaaaaaeceeeeiiiionooooooooeuuuuuythy')
 
     def test_sanitize_ids(self):
         self.assertEqual(sanitize_filename('_n_cd26wFpw', is_id=True), '_n_cd26wFpw')
@@ -259,6 +261,11 @@ class TestUtil(unittest.TestCase):
         self.assertEqual(replace_extension('abc', 'temp'), 'abc.temp')
         self.assertEqual(replace_extension('.abc', 'temp'), '.abc.temp')
         self.assertEqual(replace_extension('.abc.ext', 'temp'), '.abc.temp')
+
+    def test_subtitles_filename(self):
+        self.assertEqual(subtitles_filename('abc.ext', 'en', 'vtt'), 'abc.en.vtt')
+        self.assertEqual(subtitles_filename('abc.ext', 'en', 'vtt', 'ext'), 'abc.en.vtt')
+        self.assertEqual(subtitles_filename('abc.unexpected_ext', 'en', 'vtt', 'ext'), 'abc.unexpected_ext.en.vtt')
 
     def test_remove_start(self):
         self.assertEqual(remove_start(None, 'A - '), None)
@@ -752,6 +759,18 @@ class TestUtil(unittest.TestCase):
         d = json.loads(stripped)
         self.assertEqual(d, {'status': 'success'})
 
+    def test_strip_or_none(self):
+        self.assertEqual(strip_or_none(' abc'), 'abc')
+        self.assertEqual(strip_or_none('abc '), 'abc')
+        self.assertEqual(strip_or_none(' abc '), 'abc')
+        self.assertEqual(strip_or_none('\tabc\t'), 'abc')
+        self.assertEqual(strip_or_none('\n\tabc\n\t'), 'abc')
+        self.assertEqual(strip_or_none('abc'), 'abc')
+        self.assertEqual(strip_or_none(''), '')
+        self.assertEqual(strip_or_none(None), None)
+        self.assertEqual(strip_or_none(42), None)
+        self.assertEqual(strip_or_none([]), None)
+
     def test_uppercase_escape(self):
         self.assertEqual(uppercase_escape('aä'), 'aä')
         self.assertEqual(uppercase_escape('\\U0001d550'), '𝕐')
@@ -809,6 +828,15 @@ class TestUtil(unittest.TestCase):
             'vcodec': 'av01.0.05M.08',
             'acodec': 'none',
         })
+        self.assertEqual(parse_codecs('theora, vorbis'), {
+            'vcodec': 'theora',
+            'acodec': 'vorbis',
+        })
+        self.assertEqual(parse_codecs('unknownvcodec, unknownacodec'), {
+            'vcodec': 'unknownvcodec',
+            'acodec': 'unknownacodec',
+        })
+        self.assertEqual(parse_codecs('unknown'), {})
 
     def test_escape_rfc3986(self):
         reserved = "!*'();:@&=+$,/?#[]"
