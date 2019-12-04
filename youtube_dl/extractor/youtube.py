@@ -1839,26 +1839,26 @@ class YoutubeIE(YoutubeBaseInfoExtractor):
                 unavailable_message = 'Unable to extract video data'
             raise ExtractorError(
                 'YouTube said: %s' % unavailable_message, expected=True, video_id=video_id)
-        if 'account_playback_token' not in video_info:
-            if 'reason' in video_info:
-                if 'The uploader has not made this video available in your country.' in video_info['reason']:
-                    regions_allowed = self._html_search_meta(
-                        'regionsAllowed', video_webpage, default=None)
-                    countries = regions_allowed.split(',') if regions_allowed else None
-                    self.raise_geo_restricted(
-                        msg=video_info['reason'][0], countries=countries)
-                reason = video_info['reason'][0]
-                if 'Invalid parameters' in reason:
-                    unavailable_message = extract_unavailable_message()
-                    if unavailable_message:
-                        reason = unavailable_message
-                raise ExtractorError(
-                    'YouTube said: %s' % reason,
-                    expected=True, video_id=video_id)
-            else:
-                raise ExtractorError(
-                    '"token" parameter not in video info for unknown reason',
-                    video_id=video_id)
+        # if 'account_playback_token' not in video_info:
+        #     if 'reason' in video_info:
+        #         if 'The uploader has not made this video available in your country.' in video_info['reason']:
+        #             regions_allowed = self._html_search_meta(
+        #                 'regionsAllowed', video_webpage, default=None)
+        #             countries = regions_allowed.split(',') if regions_allowed else None
+        #             self.raise_geo_restricted(
+        #                 msg=video_info['reason'][0], countries=countries)
+        #         reason = video_info['reason'][0]
+        #         if 'Invalid parameters' in reason:
+        #             unavailable_message = extract_unavailable_message()
+        #             if unavailable_message:
+        #                 reason = unavailable_message
+        #         raise ExtractorError(
+        #             'YouTube said: %s' % reason,
+        #             expected=True, video_id=video_id)
+        #     else:
+        #         raise ExtractorError(
+        #             '"token" parameter not in video info for unknown reason',
+        #             video_id=video_id)
 
         if video_info.get('license_info'):
             raise ExtractorError('This video is DRM protected.', expected=True)
